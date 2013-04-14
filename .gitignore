@@ -1,7 +1,8 @@
 .lock-waf_darwin_build
 .waf*/
 .DS_Store
-build/
+build/*
+!build/less_simple.pbw
 include
 lib
 pebble_app.ld
