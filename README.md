@@ -9,12 +9,14 @@ seconds and the day of the week.
 I have included the built watchface for easy installation if you want to
 check it out.
 
+<img src="https://raw.github.com/tpett/pebble-less-simple/master/images/watchface.jpg" alt="Watch Face Image" width="200" />
+
 Installation
 ------------
 
 To install on your Pebble, simply load this page on your smart phone and
 then mash this link with your favorite finger:
-[build/less_simple.pbw](https://github.com/tpett/pebble-less-simple/blob/master/build/less_simple.pbw?raw=true).
+[build/less_simple.pbw](https://raw.github.com/tpett/pebble-less-simple/blob/master/build/less_simple.pbw).
 If asked which app to open the file with select the Pebble app.
 
 License
