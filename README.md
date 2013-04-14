@@ -16,7 +16,7 @@ Installation
 
 To install on your Pebble, simply load this page on your smart phone and
 then mash this link with your favorite finger:
-[build/less_simple.pbw](https://raw.github.com/tpett/pebble-less-simple/blob/master/build/less_simple.pbw).
+[build/less_simple.pbw](https://github.com/tpett/pebble-less-simple/blob/master/build/less_simple.pbw?raw=true).
 If asked which app to open the file with select the Pebble app.
 
 License
