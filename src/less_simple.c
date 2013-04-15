@@ -25,29 +25,41 @@ TextLayer second_layer;
 
 Layer lineLayer;
 
-void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
+void update_seconds_text(PblTm *current_time) {
+  static char second_text[] = "00";
+  string_format_time(second_text, sizeof(second_text), "%S", current_time);
+  text_layer_set_text(&second_layer, second_text);
+}
 
+void update_time_text(PblTm *current_time) {
+  static char time_text[] = "00:00";
+  string_format_time(time_text, sizeof(time_text), "%R", current_time);
+  text_layer_set_text(&time_layer, time_text);
+}
+
+void update_date_text(PblTm *current_time) {
+  static char date_text[] = "Xxxxxxxxx 00";
+  string_format_time(date_text, sizeof(date_text), "%A %e", current_time);
+  text_layer_set_text(&date_layer, date_text);
+}
+
+void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
   (void)t;
   (void)ctx;
 
-  static char date_text[] = "Xxxxxxxxx 00";
-  static char time_text[] = "00:00";
-  static char second_text[] = "00";
-
   PblTm current_time;
-
 
   get_time(&current_time);
 
-  string_format_time(date_text, sizeof(date_text), "%A %e", &current_time);
-  string_format_time(time_text, sizeof(time_text), "%R", &current_time);
-  string_format_time(second_text, sizeof(second_text), "%S", &current_time);
+  update_seconds_text(&current_time);
 
-  text_layer_set_text(&date_layer, date_text);
-  text_layer_set_text(&time_layer, time_text);
-  text_layer_set_text(&second_layer, second_text);
+  if(t == NULL || current_time.tm_sec == 0)
+    update_time_text(&current_time);
 
+  if(t == NULL || (current_time.tm_hour == 0 && current_time.tm_min == 0 && current_time.tm_sec == 0))
+    update_date_text(&current_time);
 }
+
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
   (void)me;
@@ -56,15 +68,12 @@ void line_layer_update_callback(Layer *me, GContext* ctx) {
 
   graphics_draw_line(ctx, GPoint(PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 3), GPoint(SCREEN_WIDTH - PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 3));
   graphics_draw_line(ctx, GPoint(PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 4), GPoint(SCREEN_WIDTH - PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 4));
-
 }
 
 void handle_init_app(AppContextRef app_ctx) {
-
   window_init(&window, "Less Simple");
   window_stack_push(&window, true);
   window_set_background_color(&window, GColorBlack);
-
 
   text_layer_init(&date_layer, GRect(PADDING*1.5, PADDING + DATE_TOP_PADDING, SCREEN_WIDTH-PADDING, LINE_HEIGHT));
   text_layer_set_text_color(&date_layer, GColorWhite);
@@ -93,7 +102,6 @@ void handle_init_app(AppContextRef app_ctx) {
   layer_init(&lineLayer, window.layer.frame);
   lineLayer.update_proc = &line_layer_update_callback;
   layer_add_child(&window.layer, &lineLayer);
-
 }
 
 
