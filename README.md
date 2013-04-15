@@ -19,6 +19,17 @@ then mash this link with your favorite finger:
 [build/less_simple.pbw](https://github.com/tpett/pebble-less-simple/blob/master/build/less_simple.pbw?raw=true).
 If asked which app to open the file with select the Pebble app.
 
+Change Log
+----------
+
+#### 2.1
+Improvements to battery consumption. Only the necessary parts of the
+screen are redrawn on each tick rather than blindly redrawing
+everything.
+
+#### 2.0
+Initial Release (why start at 1.0?)
+
 License
 -------
 Copyright (c) 2013 Travis Petticrew (MIT License)
