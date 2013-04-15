@@ -19,6 +19,8 @@ PBL_APP_INFO(MY_UUID, "Less Simple", "Travis Petticrew", 0x2, 0x0, RESOURCE_ID_I
 
 Window window;
 
+PblTm display_time;
+
 TextLayer date_layer;
 TextLayer time_layer;
 TextLayer second_layer;
@@ -35,12 +37,14 @@ void update_time_text(PblTm *current_time) {
   static char time_text[] = "00:00";
   string_format_time(time_text, sizeof(time_text), "%R", current_time);
   text_layer_set_text(&time_layer, time_text);
+  display_time.tm_min = current_time->tm_min;
 }
 
 void update_date_text(PblTm *current_time) {
   static char date_text[] = "Xxxxxxxxx 00";
   string_format_time(date_text, sizeof(date_text), "%A %e", current_time);
   text_layer_set_text(&date_layer, date_text);
+  display_time.tm_mday = current_time->tm_mday;
 }
 
 void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
@@ -49,14 +53,17 @@ void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
 
   PblTm current_time;
 
-  get_time(&current_time);
+  if(t)
+    current_time = *t->tick_time;
+  else
+    get_time(&current_time);
 
   update_seconds_text(&current_time);
 
-  if(t == NULL || current_time.tm_sec == 0)
+  if(current_time.tm_min != display_time.tm_min)
     update_time_text(&current_time);
 
-  if(t == NULL || (current_time.tm_hour == 0 && current_time.tm_min == 0 && current_time.tm_sec == 0))
+  if(current_time.tm_mday != display_time.tm_mday)
     update_date_text(&current_time);
 }
 
