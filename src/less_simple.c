@@ -9,7 +9,7 @@
 #include "pebble_fonts.h"
 
 #define MY_UUID {0x39, 0xCE, 0xD3, 0xEA, 0x04, 0x56, 0x46, 0x87, 0x83, 0x61, 0xDC, 0xBD, 0x46, 0xC2, 0xDA, 0x0B}
-PBL_APP_INFO(MY_UUID, "Less Simple", "Travis Petticrew", 0x2, 0x0, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
+PBL_APP_INFO(MY_UUID, "Less Simple", "Travis Petticrew", 2, 1, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 #define SCREEN_WIDTH 144
 #define SCREEN_HEIGHT 168
@@ -19,35 +19,54 @@ PBL_APP_INFO(MY_UUID, "Less Simple", "Travis Petticrew", 0x2, 0x0, RESOURCE_ID_I
 
 Window window;
 
+PblTm display_time;
+
 TextLayer date_layer;
 TextLayer time_layer;
 TextLayer second_layer;
 
 Layer lineLayer;
 
-void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
+void update_seconds_text(PblTm *current_time) {
+  static char second_text[] = "00";
+  string_format_time(second_text, sizeof(second_text), "%S", current_time);
+  text_layer_set_text(&second_layer, second_text);
+}
 
+void update_time_text(PblTm *current_time) {
+  static char time_text[] = "00:00";
+  string_format_time(time_text, sizeof(time_text), "%R", current_time);
+  text_layer_set_text(&time_layer, time_text);
+  display_time.tm_min = current_time->tm_min;
+}
+
+void update_date_text(PblTm *current_time) {
+  static char date_text[] = "Xxxxxxxxx 00";
+  string_format_time(date_text, sizeof(date_text), "%A %e", current_time);
+  text_layer_set_text(&date_layer, date_text);
+  display_time.tm_mday = current_time->tm_mday;
+}
+
+void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
   (void)t;
   (void)ctx;
 
-  static char date_text[] = "Xxxxxxxxx 00";
-  static char time_text[] = "00:00";
-  static char second_text[] = "00";
-
   PblTm current_time;
 
+  if(t)
+    current_time = *t->tick_time;
+  else
+    get_time(&current_time);
 
-  get_time(&current_time);
+  update_seconds_text(&current_time);
 
-  string_format_time(date_text, sizeof(date_text), "%A %e", &current_time);
-  string_format_time(time_text, sizeof(time_text), "%R", &current_time);
-  string_format_time(second_text, sizeof(second_text), "%S", &current_time);
+  if(current_time.tm_min != display_time.tm_min)
+    update_time_text(&current_time);
 
-  text_layer_set_text(&date_layer, date_text);
-  text_layer_set_text(&time_layer, time_text);
-  text_layer_set_text(&second_layer, second_text);
-
+  if(current_time.tm_mday != display_time.tm_mday)
+    update_date_text(&current_time);
 }
+
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
   (void)me;
@@ -56,15 +75,12 @@ void line_layer_update_callback(Layer *me, GContext* ctx) {
 
   graphics_draw_line(ctx, GPoint(PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 3), GPoint(SCREEN_WIDTH - PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 3));
   graphics_draw_line(ctx, GPoint(PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 4), GPoint(SCREEN_WIDTH - PADDING, DATE_TOP_PADDING + LINE_HEIGHT - 4));
-
 }
 
 void handle_init_app(AppContextRef app_ctx) {
-
   window_init(&window, "Less Simple");
   window_stack_push(&window, true);
   window_set_background_color(&window, GColorBlack);
-
 
   text_layer_init(&date_layer, GRect(PADDING*1.5, PADDING + DATE_TOP_PADDING, SCREEN_WIDTH-PADDING, LINE_HEIGHT));
   text_layer_set_text_color(&date_layer, GColorWhite);
@@ -93,7 +109,6 @@ void handle_init_app(AppContextRef app_ctx) {
   layer_init(&lineLayer, window.layer.frame);
   lineLayer.update_proc = &line_layer_update_callback;
   layer_add_child(&window.layer, &lineLayer);
-
 }
 
 
