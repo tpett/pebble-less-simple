@@ -35,7 +35,10 @@ void update_seconds_text(PblTm *current_time) {
 
 void update_time_text(PblTm *current_time) {
   static char time_text[] = "00:00";
-  string_format_time(time_text, sizeof(time_text), "%R", current_time);
+  if(clock_is_24h_style())
+    string_format_time(time_text, sizeof(time_text), "%R", current_time);
+  else
+    string_format_time(time_text, sizeof(time_text), "%I:%M", current_time);
   text_layer_set_text(&time_layer, time_text);
   display_time.tm_min = current_time->tm_min;
 }
