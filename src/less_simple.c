@@ -9,7 +9,7 @@
 #include "pebble_fonts.h"
 
 #define MY_UUID {0x39, 0xCE, 0xD3, 0xEA, 0x04, 0x56, 0x46, 0x87, 0x83, 0x61, 0xDC, 0xBD, 0x46, 0xC2, 0xDA, 0x0B}
-PBL_APP_INFO(MY_UUID, "Less Simple", "Travis Petticrew", 2, 2, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
+PBL_APP_INFO(MY_UUID, "Less Simple", "Travis Petticrew", 2, 3, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 #define SCREEN_WIDTH 144
 #define SCREEN_HEIGHT 168

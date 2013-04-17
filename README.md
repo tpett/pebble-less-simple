@@ -22,6 +22,10 @@ If asked which app to open the file with select the Pebble app.
 Change Log
 ----------
 
+#### 2.3
+"Wednesday" will now read "Wed" so that it doesn't push the date off of
+the screen.
+
 #### 2.2
 Added support for 12hr clock. The watch face now honors the 12hr/24hr
 global setting.
