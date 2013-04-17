@@ -45,7 +45,11 @@ void update_time_text(PblTm *current_time) {
 
 void update_date_text(PblTm *current_time) {
   static char date_text[] = "Xxxxxxxxx 00";
-  string_format_time(date_text, sizeof(date_text), "%A %e", current_time);
+  if(current_time->tm_wday == 3)
+    // "Wednesday" doesn't fit on the screen so just show "Wed"
+    string_format_time(date_text, sizeof(date_text), "%a %e", current_time);
+  else
+    string_format_time(date_text, sizeof(date_text), "%A %e", current_time);
   text_layer_set_text(&date_layer, date_text);
   display_time.tm_mday = current_time->tm_mday;
 }
