@@ -22,6 +22,10 @@ If asked which app to open the file with select the Pebble app.
 Change Log
 ----------
 
+#### 2.2
+Added support for 12hr clock. The watch face now honors the 12hr/24hr
+global setting.
+
 #### 2.1
 Improvements to battery consumption. Only the necessary parts of the
 screen are redrawn on each tick rather than blindly redrawing
